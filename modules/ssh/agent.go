@@ -23,8 +23,8 @@ type SshAgent struct {
 	ln         net.Listener
 }
 
-// Create SSH agent, start it in background and returns control back to the main thread
-// You should stop the agent to cleanup files afterwards by calling `defer s.Stop()`
+/*Create SSH agent, start it in background and returns control back to the main thread
+You should stop the agent to cleanup files afterwards by calling `defer s.Stop()`*/
 func NewSshAgent(t testing.TestingT, socketDir string, socketFile string) (*SshAgent, error) {
 	var err error
 	s := &SshAgent{make(chan bool), make(chan bool), socketDir, socketFile, agent.NewKeyring(), nil}
