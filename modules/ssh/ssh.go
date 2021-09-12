@@ -1,4 +1,4 @@
-// Package ssh allows to manage SSH connections and send commands through them.
+/* Package ssh allows to manage SSH connections and send commands through them. */
 package ssh
 
 import (
@@ -21,12 +21,11 @@ import (
 	"golang.org/x/crypto/ssh/agent"
 )
 
-// Host is a remote host.
+/* Host is a remote host. */
 type Host struct {
 	Hostname    string // host name or ip address
 	SshUserName string // user name
-	// set one or more authentication methods,
-	// the first valid method will be used
+	/* set one or more authentication methods, the first valid method will be used */
 	SshKeyPair       *KeyPair  // ssh key pair to use as authentication method (disabled by default)
 	SshAgent         bool      // enable authentication using your existing local SSH agent (disabled by default)
 	OverrideSshAgent *SshAgent // enable an in process `SshAgent` for connections to this host (disabled by default)
@@ -42,7 +41,7 @@ type ScpDownloadOptions struct {
 	RemoteHost      Host     //Connection information for the remote machine
 }
 
-// ScpFileToE uploads the contents using SCP to the given host and fails the test if the connection fails.
+/* ScpFileToE uploads the contents using SCP to the given host and fails the test if the connection fails. */
 func ScpFileTo(t testing.TestingT, host Host, mode os.FileMode, remotePath, contents string) {
 	err := ScpFileToE(t, host, mode, remotePath, contents)
 	if err != nil {
@@ -50,7 +49,7 @@ func ScpFileTo(t testing.TestingT, host Host, mode os.FileMode, remotePath, cont
 	}
 }
 
-// ScpFileToE uploads the contents using SCP to the given host and return an error if the process fails.
+/* ScpFileToE uploads the contents using SCP to the given host and return an error if the process fails. */
 func ScpFileToE(t testing.TestingT, host Host, mode os.FileMode, remotePath, contents string) error {
 	authMethods, err := createAuthMethodsForHost(host)
 	if err != nil {
@@ -80,7 +79,7 @@ func ScpFileToE(t testing.TestingT, host Host, mode os.FileMode, remotePath, con
 	return err
 }
 
-// ScpFileFrom downloads the file from remotePath on the given host using SCP.
+/* ScpFileFrom downloads the file from remotePath on the given host using SCP. */
 func ScpFileFrom(t testing.TestingT, host Host, remotePath string, localDestination *os.File, useSudo bool) {
 	err := ScpFileFromE(t, host, remotePath, localDestination, useSudo)
 
@@ -89,7 +88,7 @@ func ScpFileFrom(t testing.TestingT, host Host, remotePath string, localDestinat
 	}
 }
 
-// ScpFileFromE downloads the file from remotePath on the given host using SCP and returns an error if the process fails.
+/* ScpFileFromE downloads the file from remotePath on the given host using SCP and returns an error if the process fails. */
 func ScpFileFromE(t testing.TestingT, host Host, remotePath string, localDestination *os.File, useSudo bool) error {
 	authMethods, err := createAuthMethodsForHost(host)
 
@@ -117,7 +116,7 @@ func ScpFileFromE(t testing.TestingT, host Host, remotePath string, localDestina
 	return copyFileFromRemote(t, sshSession, localDestination, remotePath, useSudo)
 }
 
-// ScpDirFrom downloads all the files from remotePath on the given host using SCP.
+/* ScpDirFrom downloads all the files from remotePath on the given host using SCP. */
 func ScpDirFrom(t testing.TestingT, options ScpDownloadOptions, useSudo bool) {
 	err := ScpDirFromE(t, options, useSudo)
 
@@ -126,10 +125,8 @@ func ScpDirFrom(t testing.TestingT, options ScpDownloadOptions, useSudo bool) {
 	}
 }
 
-// ScpDirFromE downloads all the files from remotePath on the given host using SCP
-// and returns an error if the process fails. NOTE: only files within remotePath will
-// be downloaded. This function will not recursively download subdirectories or follow
-// symlinks.
+/* ScpDirFromE downloads all the files from remotePath on the given host using SCP and returns an error if the process fails.
+NOTE: only files within remotePath will be downloaded. This function will not recursively download subdirectories or follow symlinks. */
 func ScpDirFromE(t testing.TestingT, options ScpDownloadOptions, useSudo bool) error {
 	authMethods, err := createAuthMethodsForHost(options.RemoteHost)
 	if err != nil {
@@ -186,7 +183,7 @@ func ScpDirFromE(t testing.TestingT, options ScpDownloadOptions, useSudo bool) e
 	return errorsOccurred.ErrorOrNil()
 }
 
-// CheckSshConnection checks that you can connect via SSH to the given host and fail the test if the connection fails.
+/* CheckSshConnection checks that you can connect via SSH to the given host and fail the test if the connection fails. */
 func CheckSshConnection(t testing.TestingT, host Host) {
 	err := CheckSshConnectionE(t, host)
 	if err != nil {
@@ -194,14 +191,13 @@ func CheckSshConnection(t testing.TestingT, host Host) {
 	}
 }
 
-// CheckSshConnectionE checks that you can connect via SSH to the given host and return an error if the connection fails.
+/* CheckSshConnectionE checks that you can connect via SSH to the given host and return an error if the connection fails. */
 func CheckSshConnectionE(t testing.TestingT, host Host) error {
 	_, err := CheckSshCommandE(t, host, "'exit'")
 	return err
 }
 
-// CheckSshConnectionWithRetry attempts to connect via SSH until max retries has been exceeded and fails the test
-// if the connection fails
+/* CheckSshConnectionWithRetry attempts to connect via SSH until max retries has been exceeded and fails the test if the connection fails */
 func CheckSshConnectionWithRetry(t testing.TestingT, host Host, retries int, sleepBetweenRetries time.Duration, f ...func(testing.TestingT, Host) error) {
 	handler := CheckSshConnectionE
 	if f != nil {
@@ -213,8 +209,7 @@ func CheckSshConnectionWithRetry(t testing.TestingT, host Host, retries int, sle
 	}
 }
 
-// CheckSshConnectionWithRetryE attempts to connect via SSH until max retries has been exceeded and returns an error if
-// the connection fails
+/* CheckSshConnectionWithRetryE attempts to connect via SSH until max retries has been exceeded and returns an error if the connection fails */
 func CheckSshConnectionWithRetryE(t testing.TestingT, host Host, retries int, sleepBetweenRetries time.Duration, f ...func(testing.TestingT, Host) error) error {
 	handler := CheckSshConnectionE
 	if f != nil {
@@ -227,7 +222,7 @@ func CheckSshConnectionWithRetryE(t testing.TestingT, host Host, retries int, sl
 	return err
 }
 
-// CheckSshCommand checks that you can connect via SSH to the given host and run the given command. Returns the stdout/stderr.
+/* CheckSshCommand checks that you can connect via SSH to the given host and run the given command. Returns the stdout/stderr. */
 func CheckSshCommand(t testing.TestingT, host Host, command string) string {
 	out, err := CheckSshCommandE(t, host, command)
 	if err != nil {
@@ -236,7 +231,7 @@ func CheckSshCommand(t testing.TestingT, host Host, command string) string {
 	return out
 }
 
-// CheckSshCommandE checks that you can connect via SSH to the given host and run the given command. Returns the stdout/stderr.
+/* CheckSshCommandE checks that you can connect via SSH to the given host and run the given command. Returns the stdout/stderr. */
 func CheckSshCommandE(t testing.TestingT, host Host, command string) (string, error) {
 	authMethods, err := createAuthMethodsForHost(host)
 	if err != nil {
@@ -261,7 +256,8 @@ func CheckSshCommandE(t testing.TestingT, host Host, command string) (string, er
 	return runSSHCommand(t, sshSession)
 }
 
-// CheckSshCommandWithRetry checks that you can connect via SSH to the given host and run the given command until max retries have been exceeded. Returns the stdout/stderr.
+/* CheckSshCommandWithRetry checks that you can connect via SSH to the given host and run the given command until max retries have been exceeded.
+Returns the stdout/stderr. */
 func CheckSshCommandWithRetry(t testing.TestingT, host Host, command string, retries int, sleepBetweenRetries time.Duration, f ...func(testing.TestingT, Host, string) (string, error)) string {
 	handler := CheckSshCommandE
 	if f != nil {
@@ -274,8 +270,8 @@ func CheckSshCommandWithRetry(t testing.TestingT, host Host, command string, ret
 	return out
 }
 
-// CheckSshCommandWithRetryE checks that you can connect via SSH to the given host and run the given command until max retries has been exceeded.
-// It return an error if the command fails after max retries has been exceeded.
+/* CheckSshCommandWithRetryE checks that you can connect via SSH to the given host and run the given command until max retries has been exceeded.
+It return an error if the command fails after max retries has been exceeded. */
 
 func CheckSshCommandWithRetryE(t testing.TestingT, host Host, command string, retries int, sleepBetweenRetries time.Duration, f ...func(testing.TestingT, Host, string) (string, error)) (string, error) {
 	handler := CheckSshCommandE
@@ -287,9 +283,9 @@ func CheckSshCommandWithRetryE(t testing.TestingT, host Host, command string, re
 	})
 }
 
-// CheckPrivateSshConnection attempts to connect to privateHost (which is not addressable from the Internet) via a
-// separate publicHost (which is addressable from the Internet) and then executes "command" on privateHost and returns
-// its output. It is useful for checking that it's possible to SSH from a Bastion Host to a private instance.
+/* CheckPrivateSshConnection attempts to connect to privateHost (which is not addressable from the Internet) via a separate publicHost
+(which is addressable from the Internet) and then executes "command" on privateHost and returns its output. It is useful for checking
+that it's possible to SSH from a Bastion Host to a private instance. */
 func CheckPrivateSshConnection(t testing.TestingT, publicHost Host, privateHost Host, command string) string {
 	out, err := CheckPrivateSshConnectionE(t, publicHost, privateHost, command)
 	if err != nil {
@@ -298,9 +294,9 @@ func CheckPrivateSshConnection(t testing.TestingT, publicHost Host, privateHost 
 	return out
 }
 
-// CheckPrivateSshConnectionE attempts to connect to privateHost (which is not addressable from the Internet) via a
-// separate publicHost (which is addressable from the Internet) and then executes "command" on privateHost and returns
-// its output. It is useful for checking that it's possible to SSH from a Bastion Host to a private instance.
+/* CheckPrivateSshConnectionE attempts to connect to privateHost (which is not addressable from the Internet) via a separate publicHost
+(which is addressable from the Internet) and then executes "command" on privateHost and returns its output. It is useful for checking
+that it's possible to SSH from a Bastion Host to a private instance. */
 func CheckPrivateSshConnectionE(t testing.TestingT, publicHost Host, privateHost Host, command string) (string, error) {
 	jumpHostAuthMethods, err := createAuthMethodsForHost(publicHost)
 	if err != nil {
@@ -338,9 +334,8 @@ func CheckPrivateSshConnectionE(t testing.TestingT, publicHost Host, privateHost
 	return runSSHCommand(t, sshSession)
 }
 
-// FetchContentsOfFiles connects to the given host via SSH and fetches the contents of the files at the given filePaths.
-// If useSudo is true, then the contents will be retrieved using sudo. This method returns a map from file path to
-// contents.
+/* FetchContentsOfFiles connects to the given host via SSH and fetches the contents of the files at the given filePaths. If useSudo is true,
+then the contents will be retrieved using sudo. This method returns a map from file path to contents. */
 func FetchContentsOfFiles(t testing.TestingT, host Host, useSudo bool, filePaths ...string) map[string]string {
 	out, err := FetchContentsOfFilesE(t, host, useSudo, filePaths...)
 	if err != nil {
@@ -349,9 +344,8 @@ func FetchContentsOfFiles(t testing.TestingT, host Host, useSudo bool, filePaths
 	return out
 }
 
-// FetchContentsOfFilesE connects to the given host via SSH and fetches the contents of the files at the given filePaths.
-// If useSudo is true, then the contents will be retrieved using sudo. This method returns a map from file path to
-// contents.
+/* FetchContentsOfFilesE connects to the given host via SSH and fetches the contents of the files at the given filePaths. If useSudo is true,
+then the contents will be retrieved using sudo. This method returns a map from file path to contents. */
 func FetchContentsOfFilesE(t testing.TestingT, host Host, useSudo bool, filePaths ...string) (map[string]string, error) {
 	filePathToContents := map[string]string{}
 
@@ -367,8 +361,8 @@ func FetchContentsOfFilesE(t testing.TestingT, host Host, useSudo bool, filePath
 	return filePathToContents, nil
 }
 
-// FetchContentsOfFile connects to the given host via SSH and fetches the contents of the file at the given filePath.
-// If useSudo is true, then the contents will be retrieved using sudo. This method returns the contents of that file.
+/* FetchContentsOfFile connects to the given host via SSH and fetches the contents of the file at the given filePath. If useSudo is true,
+then the contents will be retrieved using sudo. This method returns the contents of that file. */
 func FetchContentsOfFile(t testing.TestingT, host Host, useSudo bool, filePath string) string {
 	out, err := FetchContentsOfFileE(t, host, useSudo, filePath)
 	if err != nil {
@@ -377,8 +371,8 @@ func FetchContentsOfFile(t testing.TestingT, host Host, useSudo bool, filePath s
 	return out
 }
 
-// FetchContentsOfFileE connects to the given host via SSH and fetches the contents of the file at the given filePath.
-// If useSudo is true, then the contents will be retrieved using sudo. This method returns the contents of that file.
+/* FetchContentsOfFileE connects to the given host via SSH and fetches the contents of the file at the given filePath. If useSudo is true,
+then the contents will be retrieved using sudo. This method returns the contents of that file. */
 func FetchContentsOfFileE(t testing.TestingT, host Host, useSudo bool, filePath string) (string, error) {
 	command := fmt.Sprintf("cat %s", filePath)
 	if useSudo {
@@ -406,12 +400,11 @@ func listFileInRemoteDir(t testing.TestingT, sshSession *SshSession, options Scp
 
 		findCommandArgs = append(findCommandArgs, "\\(")
 		for i, curFilter := range options.FileNameFilters {
-			// due to inconsistent bash behavior we need to wrap the
-			// filter in single quotes
+			/* Due to inconsistent bash behavior we need to wrap the filter in single quotes. */
 			curFilter = fmt.Sprintf("'%s'", curFilter)
 			findCommandArgs = append(findCommandArgs, "-name", curFilter)
 
-			// only add the or flag if we're not the last element
+			/* only add the or flag if we're not the last element */
 			if filtersLength-i > 1 {
 				findCommandArgs = append(findCommandArgs, "-o")
 			}
@@ -430,16 +423,15 @@ func listFileInRemoteDir(t testing.TestingT, sshSession *SshSession, options Scp
 		return result, err
 	}
 
-	// The last character returned is `\n` this results in an extra "" array
-	// member when we do the split below. Cut off the last character to avoid
-	// having to remove the blank entry in the array.
+	/* The last character returned is `\n` this results in an extra "" array member when we do the split below. Cut off the last character to avoid
+	having to remove the blank entry in the array. */
 	resultString = resultString[:len(resultString)-1]
 
 	result = append(result, strings.Split(resultString, "\n")...)
 	return result, nil
 }
 
-// Added based on code: https://github.com/bramvdbogaerde/go-scp/pull/6/files
+/* Added based on code: https://github.com/bramvdbogaerde/go-scp/pull/6/files */
 func copyFileFromRemote(t testing.TestingT, sshSession *SshSession, file *os.File, remotePath string, useSudo bool) error {
 	logger.Logf(t, "Running command %s on %s@%s", sshSession.Options.Command, sshSession.Options.Username, sshSession.Options.Address)
 	if err := setUpSSHClient(sshSession); err != nil {
@@ -460,7 +452,7 @@ func copyFileFromRemote(t testing.TestingT, sshSession *SshSession, file *os.Fil
 		fmt.Printf("error reading from remote stdout: %s", err)
 	}
 	defer sshSession.Session.Close()
-	//write to local file
+	/* write to local file */
 	_, err = file.Write(r)
 
 	return err
@@ -555,26 +547,26 @@ func createSSHClientConfig(hostOptions *SshConnectionOptions) *ssh.ClientConfig 
 	clientConfig := &ssh.ClientConfig{
 		User: hostOptions.Username,
 		Auth: hostOptions.AuthMethods,
-		// Do not do a host key check, as Terratest is only used for testing, not prod
+		/* Do not do a host key check, as Terratest is only used for testing, not prod */
 		HostKeyCallback: NoOpHostKeyCallback,
-		// By default, Go does not impose a timeout, so a SSH connection attempt can hang for a LONG time.
+		/* By default, Go does not impose a timeout, so a SSH connection attempt can hang for a LONG time. */
 		Timeout: 10 * time.Second,
 	}
 	clientConfig.SetDefaults()
 	return clientConfig
 }
 
-// NoOpHostKeyCallback is an ssh.HostKeyCallback that does nothing. Only use this when you're sure you don't want to check the host key at all
-// (e.g., only for testing and non-production use cases).
+/* NoOpHostKeyCallback is an ssh.HostKeyCallback that does nothing. Only use this when you're sure you don't want to check the host key at all
+(e.g., only for testing and non-production use cases). */
 func NoOpHostKeyCallback(hostname string, remote net.Addr, key ssh.PublicKey) error {
 	return nil
 }
 
-// Returns an array of authentication methods
+/* Returns an array of authentication methods */
 func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 	var methods []ssh.AuthMethod
 
-	// override local ssh agent with given sshAgent instance
+	/* override local ssh agent with given sshAgent instance */
 	if host.OverrideSshAgent != nil {
 		conn, err := net.Dial("unix", host.OverrideSshAgent.socketFile)
 		if err != nil {
@@ -585,8 +577,7 @@ func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 		methods = append(methods, []ssh.AuthMethod{ssh.PublicKeysCallback(agentClient.Signers)}...)
 	}
 
-	// use existing ssh agent socket
-	// if agent authentication is enabled and no agent is set up, returns an error
+	/* use existing ssh agent socket if agent authentication is enabled and no agent is set up, returns an error */
 	if host.SshAgent {
 		socket := os.Getenv("SSH_AUTH_SOCK")
 		conn, err := net.Dial("unix", socket)
@@ -597,7 +588,7 @@ func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 		methods = append(methods, []ssh.AuthMethod{ssh.PublicKeysCallback(agentClient.Signers)}...)
 	}
 
-	// use provided ssh key pair
+	/* use provided ssh key pair */
 	if host.SshKeyPair != nil {
 		signer, err := ssh.ParsePrivateKey([]byte(host.SshKeyPair.PrivateKey))
 		if err != nil {
@@ -606,12 +597,12 @@ func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 		methods = append(methods, []ssh.AuthMethod{ssh.PublicKeys(signer)}...)
 	}
 
-	// Use given password
+	/* Use given password */
 	if len(host.Password) > 0 {
 		methods = append(methods, []ssh.AuthMethod{ssh.Password(host.Password)}...)
 	}
 
-	// no valid authentication method was provided
+	/* no valid authentication method was provided */
 	if len(methods) < 1 {
 		return methods, errors.New("no authentication method defined")
 	}
@@ -619,29 +610,29 @@ func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 	return methods, nil
 }
 
-// sendScpCommandsToCopyFile returns a function which will send commands to the SCP binary to output a file on the remote machine.
-// A full explanation of the SCP protocol can be found at
-// https://web.archive.org/web/20170215184048/https://blogs.oracle.com/janp/entry/how_the_scp_protocol_works
+/* sendScpCommandsToCopyFile returns a function which will send commands to the SCP binary to output a file on the remote machine.
+A full explanation of the SCP protocol can be found at
+https://web.archive.org/web/20170215184048/https://blogs.oracle.com/janp/entry/how_the_scp_protocol_works */
 func sendScpCommandsToCopyFile(mode os.FileMode, fileName, contents string) func(io.WriteCloser) {
 	return func(input io.WriteCloser) {
 
 		octalMode := "0" + strconv.FormatInt(int64(mode), 8)
 
-		// Create a file at <filename> with Unix permissions set to <octalMost> and the file will be <len(content)> bytes long.
+		/* Create a file at <filename> with Unix permissions set to <octalMost> and the file will be <len(content)> bytes long. */
 		fmt.Fprintln(input, "C"+octalMode, len(contents), fileName)
 
-		// Actually send the file
+		/* Actually send the file */
 		fmt.Fprint(input, contents)
 
-		// End of transfer
+		/* End of transfer */
 		fmt.Fprint(input, "\x00")
 	}
 }
 
-// Gets the port that should be used to communicate with the host
+/* Gets the port that should be used to communicate with the host */
 func (h Host) getPort() int {
 
-	//If a CustomPort is not set use standard ssh port
+	/* If a CustomPort is not set use standard ssh port */
 	if h.CustomPort == 0 {
 		return 22
 	} else {
