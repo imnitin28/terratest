@@ -1,2 +1,2 @@
-// Package shell allows to run commands in a shell.
+/*Package shell allows to run commands in a shell.*/
 package shell

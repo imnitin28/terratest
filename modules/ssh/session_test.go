@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 )
-
+/* Test to ensure various ssh connection options(ipv4, ipv6, fqdn) */
 func TestSshConnectionOptions_ConnectionString(t *testing.T) {
 	type fields struct {
 		Address string

@@ -26,11 +26,11 @@ func TestHostWithCustomPort(t *testing.T) {
 	assert.Equal(t, customPort, host.getPort(), "host.getPort() did not return the custom port number")
 }
 
-// global var for use in mock callback
+/* global var for use in mock callback */
 var timesCalled int
 
 func TestCheckSshConnectionWithRetryE(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
@@ -40,19 +40,19 @@ func TestCheckSshConnectionWithRetryE(t *testing.T) {
 }
 
 func TestCheckSshConnectionWithRetryEExceedsMaxRetries(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
 
-	// Not enough retries
+	/* Not enough retries */
 	retries := 3
 
 	assert.Error(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnectionE))
 }
 
 func TestCheckSshConnectionWithRetry(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
@@ -62,7 +62,7 @@ func TestCheckSshConnectionWithRetry(t *testing.T) {
 }
 
 func TestCheckSshCommandWithRetryE(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
@@ -74,13 +74,13 @@ func TestCheckSshCommandWithRetryE(t *testing.T) {
 }
 
 func TestCheckSshCommandWithRetryEExceedsRetries(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
 	command := "echo -n hello world"
 
-	// Not enough retries
+	/* Not enough retries */
 	retries := 3
 
 	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommandE)
@@ -88,7 +88,7 @@ func TestCheckSshCommandWithRetryEExceedsRetries(t *testing.T) {
 }
 
 func TestCheckSshCommandWithRetry(t *testing.T) {
-	// Reset the global call count
+	/* Reset the global call count */
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}

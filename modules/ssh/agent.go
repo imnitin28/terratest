@@ -36,12 +36,12 @@ func NewSshAgent(t testing.TestingT, socketDir string, socketFile string) (*SshA
 	return s, nil
 }
 
-// expose socketFile variable
+/* expose socketFile variable */
 func (s *SshAgent) SocketFile() string {
 	return s.socketFile
 }
 
-// SSH Agent listener and handler
+/* SSH Agent listener and handler */
 func (s *SshAgent) run(t testing.TestingT) {
 	defer close(s.stopped)
 	for {
@@ -52,11 +52,10 @@ func (s *SshAgent) run(t testing.TestingT) {
 			c, err := s.ln.Accept()
 			if err != nil {
 				select {
-				// When s.Stop() closes the listener, s.ln.Accept() returns an error that can be ignored
-				// since the agent is in stopping process
+				/* When s.Stop() closes the listener, s.ln.Accept() returns an error that can be ignored since the agent is in stopping process */
 				case <-s.stop:
 					return
-					// When s.ln.Accept() returns a legit error, we print it and continue accepting further requests
+					/* When s.ln.Accept() returns a legit error, we print it and continue accepting further requests */
 				default:
 					logger.Logf(t, "could not accept connection to agent %v", err)
 					continue
@@ -74,7 +73,7 @@ func (s *SshAgent) run(t testing.TestingT) {
 	}
 }
 
-// Stop and clean up SSH agent
+/* Stop and clean up SSH agent */
 func (s *SshAgent) Stop() {
 	close(s.stop)
 	s.ln.Close()
@@ -82,8 +81,8 @@ func (s *SshAgent) Stop() {
 	os.RemoveAll(s.socketDir)
 }
 
-// Instantiates and returns an in-memory ssh agent with the given KeyPair already added
-// You should stop the agent to cleanup files afterwards by calling `defer sshAgent.Stop()`
+/*Instantiates and returns an in-memory ssh agent with the given KeyPair already added. You should stop the agent to cleanup files afterwards 
+by calling `defer sshAgent.Stop()` */
 func SshAgentWithKeyPair(t testing.TestingT, keyPair *KeyPair) *SshAgent {
 	sshAgent, err := SshAgentWithKeyPairE(t, keyPair)
 
@@ -109,12 +108,12 @@ func SshAgentWithKeyPairs(t testing.TestingT, keyPairs []*KeyPair) *SshAgent {
 	return sshAgent
 }
 
-// Instantiates and returns an in-memory ssh agent with the given KeyPair(s) already added
-// You should stop the agent to cleanup files afterwards by calling `defer sshAgent.Stop()`
+/* Instantiates and returns an in-memory ssh agent with the given KeyPair(s) already added You should stop the agent to cleanup files afterwards 
+by calling `defer sshAgent.Stop()`*/
 func SshAgentWithKeyPairsE(t testing.TestingT, keyPairs []*KeyPair) (*SshAgent, error) {
 	logger.Logf(t, "Generating SSH Agent with given KeyPair(s)")
 
-	// Instantiate a temporary SSH agent
+	/* Instantiate a temporary SSH agent */
 	socketDir, err := ioutil.TempDir("", "ssh-agent-")
 	if err != nil {
 		return nil, err
@@ -125,9 +124,9 @@ func SshAgentWithKeyPairsE(t testing.TestingT, keyPairs []*KeyPair) (*SshAgent, 
 		return nil, err
 	}
 
-	// add given ssh keys to the newly created agent
+	/* add given ssh keys to the newly created agent. */
 	for _, keyPair := range keyPairs {
-		// Create SSH key for the agent using the given SSH key pair(s)
+		/* Create SSH key for the agent using the given SSH key pair(s) */
 		block, _ := pem.Decode([]byte(keyPair.PrivateKey))
 		privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {

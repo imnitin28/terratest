@@ -20,14 +20,14 @@ type AsgCapacityInfo struct {
 	DesiredCapacity int64
 }
 
-// GetCapacityInfoForAsg returns the capacity info for the queried asg as a struct, AsgCapacityInfo.
+/* GetCapacityInfoForAsg returns the capacity info for the queried asg as a struct, AsgCapacityInfo. */
 func GetCapacityInfoForAsg(t testing.TestingT, asgName string, awsRegion string) AsgCapacityInfo {
 	capacityInfo, err := GetCapacityInfoForAsgE(t, asgName, awsRegion)
 	require.NoError(t, err)
 	return capacityInfo
 }
 
-// GetCapacityInfoForAsgE returns the capacity info for the queried asg as a struct, AsgCapacityInfo.
+/* GetCapacityInfoForAsgE returns the capacity info for the queried asg as a struct, AsgCapacityInfo. */
 func GetCapacityInfoForAsgE(t testing.TestingT, asgName string, awsRegion string) (AsgCapacityInfo, error) {
 	asgClient, err := NewAsgClientE(t, awsRegion)
 	if err != nil {
@@ -52,7 +52,7 @@ func GetCapacityInfoForAsgE(t testing.TestingT, asgName string, awsRegion string
 	return capacityInfo, nil
 }
 
-// GetInstanceIdsForAsg gets the IDs of EC2 Instances in the given ASG.
+/* GetInstanceIdsForAsg gets the IDs of EC2 Instances in the given ASG. */
 func GetInstanceIdsForAsg(t testing.TestingT, asgName string, awsRegion string) []string {
 	ids, err := GetInstanceIdsForAsgE(t, asgName, awsRegion)
 	if err != nil {
@@ -61,7 +61,7 @@ func GetInstanceIdsForAsg(t testing.TestingT, asgName string, awsRegion string) 
 	return ids
 }
 
-// GetInstanceIdsForAsgE gets the IDs of EC2 Instances in the given ASG.
+/* GetInstanceIdsForAsgE gets the IDs of EC2 Instances in the given ASG. */
 func GetInstanceIdsForAsgE(t testing.TestingT, asgName string, awsRegion string) ([]string, error) {
 	asgClient, err := NewAsgClientE(t, awsRegion)
 	if err != nil {
@@ -84,7 +84,7 @@ func GetInstanceIdsForAsgE(t testing.TestingT, asgName string, awsRegion string)
 	return instanceIDs, nil
 }
 
-// WaitForCapacity waits for the currently set desired capacity to be reached on the ASG
+/* WaitForCapacity waits for the currently set desired capacity to be reached on the ASG */
 func WaitForCapacity(
 	t testing.TestingT,
 	asgName string,
@@ -96,7 +96,7 @@ func WaitForCapacity(
 	require.NoError(t, err)
 }
 
-// WaitForCapacityE waits for the currently set desired capacity to be reached on the ASG
+/* WaitForCapacityE waits for the currently set desired capacity to be reached on the ASG */
 func WaitForCapacityE(
 	t testing.TestingT,
 	asgName string,
@@ -124,7 +124,7 @@ func WaitForCapacityE(
 	return err
 }
 
-// NewAsgClient creates an Auto Scaling Group client.
+/* NewAsgClient creates an Auto Scaling Group client. */
 func NewAsgClient(t testing.TestingT, region string) *autoscaling.AutoScaling {
 	client, err := NewAsgClientE(t, region)
 	if err != nil {
@@ -133,7 +133,7 @@ func NewAsgClient(t testing.TestingT, region string) *autoscaling.AutoScaling {
 	return client
 }
 
-// NewAsgClientE creates an Auto Scaling Group client.
+/* NewAsgClientE creates an Auto Scaling Group client. */
 func NewAsgClientE(t testing.TestingT, region string) (*autoscaling.AutoScaling, error) {
 	sess, err := NewAuthenticatedSession(region)
 	if err != nil {

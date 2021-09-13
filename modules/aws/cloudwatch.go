@@ -6,7 +6,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
-// GetCloudWatchLogEntries returns the CloudWatch log messages in the given region for the given log stream and log group.
+/* GetCloudWatchLogEntries returns the CloudWatch log messages in the given region for the given log stream and log group. */
 func GetCloudWatchLogEntries(t testing.TestingT, awsRegion string, logStreamName string, logGroupName string) []string {
 	out, err := GetCloudWatchLogEntriesE(t, awsRegion, logStreamName, logGroupName)
 	if err != nil {
@@ -15,7 +15,7 @@ func GetCloudWatchLogEntries(t testing.TestingT, awsRegion string, logStreamName
 	return out
 }
 
-// GetCloudWatchLogEntriesE returns the CloudWatch log messages in the given region for the given log stream and log group.
+/* GetCloudWatchLogEntriesE returns the CloudWatch log messages in the given region for the given log stream and log group. */
 func GetCloudWatchLogEntriesE(t testing.TestingT, awsRegion string, logStreamName string, logGroupName string) ([]string, error) {
 	client, err := NewCloudWatchLogsClientE(t, awsRegion)
 	if err != nil {
@@ -39,7 +39,7 @@ func GetCloudWatchLogEntriesE(t testing.TestingT, awsRegion string, logStreamNam
 	return entries, nil
 }
 
-// NewCloudWatchLogsClient creates a new CloudWatch Logs client.
+/* NewCloudWatchLogsClient creates a new CloudWatch Logs client. */
 func NewCloudWatchLogsClient(t testing.TestingT, region string) *cloudwatchlogs.CloudWatchLogs {
 	client, err := NewCloudWatchLogsClientE(t, region)
 	if err != nil {
@@ -48,7 +48,7 @@ func NewCloudWatchLogsClient(t testing.TestingT, region string) *cloudwatchlogs.
 	return client
 }
 
-// NewCloudWatchLogsClientE creates a new CloudWatch Logs client.
+/* NewCloudWatchLogsClientE creates a new CloudWatch Logs client. */
 func NewCloudWatchLogsClientE(t testing.TestingT, region string) (*cloudwatchlogs.CloudWatchLogs, error) {
 	sess, err := NewAuthenticatedSession(region)
 	if err != nil {

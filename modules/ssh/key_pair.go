@@ -11,13 +11,13 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// KeyPair is a public and private key pair that can be used for SSH access.
+/* KeyPair is a public and private key pair that can be used for SSH access. */
 type KeyPair struct {
 	PublicKey  string
 	PrivateKey string
 }
 
-// GenerateRSAKeyPair generates an RSA Keypair and return the public and private keys.
+/* GenerateRSAKeyPair generates an RSA Keypair and return the public and private keys. */
 func GenerateRSAKeyPair(t testing.TestingT, keySize int) *KeyPair {
 	keyPair, err := GenerateRSAKeyPairE(t, keySize)
 	if err != nil {
@@ -26,7 +26,7 @@ func GenerateRSAKeyPair(t testing.TestingT, keySize int) *KeyPair {
 	return keyPair
 }
 
-// GenerateRSAKeyPairE generates an RSA Keypair and return the public and private keys.
+/* GenerateRSAKeyPairE generates an RSA Keypair and return the public and private keys. */
 func GenerateRSAKeyPairE(t testing.TestingT, keySize int) (*KeyPair, error) {
 	logger.Logf(t, "Generating new public/private key of size %d", keySize)
 
@@ -35,7 +35,7 @@ func GenerateRSAKeyPairE(t testing.TestingT, keySize int) (*KeyPair, error) {
 		return nil, err
 	}
 
-	// Extract the private key
+	/* Extract the private key */
 	keyPemBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(rsaKeyPair),
@@ -43,7 +43,7 @@ func GenerateRSAKeyPairE(t testing.TestingT, keySize int) (*KeyPair, error) {
 
 	keyPem := string(pem.EncodeToMemory(keyPemBlock))
 
-	// Extract the public key
+	/* Extract the public key */
 	sshPubKey, err := ssh.NewPublicKey(rsaKeyPair.Public())
 	if err != nil {
 		return nil, err
@@ -52,6 +52,6 @@ func GenerateRSAKeyPairE(t testing.TestingT, keySize int) (*KeyPair, error) {
 	sshPubKeyBytes := ssh.MarshalAuthorizedKey(sshPubKey)
 	sshPubKeyStr := string(sshPubKeyBytes)
 
-	// Return
+	/* Return the key pair. */
 	return &KeyPair{PublicKey: sshPubKeyStr, PrivateKey: keyPem}, nil
 }

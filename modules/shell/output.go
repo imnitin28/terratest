@@ -5,11 +5,11 @@ import (
 	"sync"
 )
 
-// output contains the output after runnig a command.
+/*output contains the output after runnig a command.*/
 type output struct {
 	stdout *outputStream
 	stderr *outputStream
-	// merged contains stdout  and stderr merged into one stream.
+	/*merged contains stdout  and stderr merged into one stream.*/
 	merged *merged
 }
 
@@ -69,7 +69,7 @@ func (st *outputStream) String() string {
 }
 
 type merged struct {
-	// ensure that there are no parallel writes
+	/*ensure that there are no parallel writes*/
 	sync.Mutex
 	Lines []string
 }

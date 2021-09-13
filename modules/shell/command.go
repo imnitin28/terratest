@@ -18,23 +18,26 @@ import (
 
 /*Command is a simpler struct for defining commands than Go's built-in Cmd.*/
 type Command struct {
-	Command    string            // The command to run
-	Args       []string          // The args to pass to the command
-	WorkingDir string            // The working directory
-	Env        map[string]string // Additional environment variables to set
+	/*The command to run.*/
+	Command    string  
+	/*The args to pass to the command.*/          
+	Args       []string
+	/*The working directory.*/     
+	WorkingDir string            
+	/*Additional environment variables to set.*/
+	Env        map[string]string 
 	/*Use the specified logger for the command's output. Use logger.Discard to not print the output while executing the command.*/
 	Logger *logger.Logger
 }
 
-/*RunCommand runs a shell command and redirects its stdout and stderr to the stdout of the atomic script itself. If
-there are any errors, fail the test.*/
+/*RunCommand runs a shell command and redirects its stdout and stderr to the stdout of the atomic script itself. If there are any errors, fail the test.*/
 func RunCommand(t testing.TestingT, command Command) {
 	err := RunCommandE(t, command)
 	require.NoError(t, err)
 }
 
-/*RunCommandE runs a shell command and redirects its stdout and stderr to the stdout of the atomic script itself. Any
-returned error will be of type ErrWithCmdOutput, containing the output streams and the underlying error.*/
+/*RunCommandE runs a shell command and redirects its stdout and stderr to the stdout of the atomic script itself. Any returned error will be of type 
+ErrWithCmdOutput, containing the output streams and the underlying error.*/
 func RunCommandE(t testing.TestingT, command Command) error {
 	output, err := runCommand(t, command)
 	if err != nil {
@@ -71,9 +74,9 @@ func RunCommandAndGetStdOut(t testing.TestingT, command Command) string {
 	return output
 }
 
-/*RunCommandAndGetStdOutE runs a shell command and returns solely its stdout (but not stderr) as a string. The stdout
-and stderr of that command will also be printed to the stdout and stderr of this Go program to make debugging easier.
-Any returned error will be of type ErrWithCmdOutput, containing the output streams and the underlying error.*/
+/*RunCommandAndGetStdOutE runs a shell command and returns solely its stdout (but not stderr) as a string. The stdout and stderr of that 
+command will also be printed to the stdout and stderr of this Go program to make debugging easier. Any returned error will be of type 
+ErrWithCmdOutput, containing the output streams and the underlying error.*/
 func RunCommandAndGetStdOutE(t testing.TestingT, command Command) (string, error) {
 	output, err := runCommand(t, command)
 	if err != nil {

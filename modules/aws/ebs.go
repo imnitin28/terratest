@@ -7,7 +7,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
-// DeleteEbsSnapshot deletes the given EBS snapshot
+/* DeleteEbsSnapshot deletes the given EBS snapshot */
 func DeleteEbsSnapshot(t testing.TestingT, region string, snapshot string) {
 	err := DeleteEbsSnapshotE(t, region, snapshot)
 	if err != nil {
@@ -15,7 +15,7 @@ func DeleteEbsSnapshot(t testing.TestingT, region string, snapshot string) {
 	}
 }
 
-// DeleteEbsSnapshot deletes the given EBS snapshot
+/* DeleteEbsSnapshot deletes the given EBS snapshot */
 func DeleteEbsSnapshotE(t testing.TestingT, region string, snapshot string) error {
 	logger.Logf(t, "Deleting EBS snapshot %s", snapshot)
 	ec2Client, err := NewEc2ClientE(t, region)

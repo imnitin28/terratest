@@ -120,7 +120,7 @@ wait
 func TestRunCommandWithHugeLineOutput(t *testing.T) {
 	t.Parallel()
 
-	// generate a ~100KB line
+	/*generate a ~100KB line*/
 	bashCode := fmt.Sprintf(`
 for i in {0..35000}
 do
@@ -132,7 +132,8 @@ echo
 	cmd := Command{
 		Command: "bash",
 		Args:    []string{"-c", bashCode},
-		Logger:  logger.Discard, // don't print that line to stdout
+		/*don't print that line to stdout.*/
+		Logger:  logger.Discard, 
 	}
 
 	out, err := RunCommandAndGetOutputE(t, cmd)
@@ -146,7 +147,7 @@ echo
 	assert.Equal(t, out, buffer.String())
 }
 
-// TestRunCommandOutputError ensures that getting the output never panics, even if no command was ever run.
+/*TestRunCommandOutputError ensures that getting the output never panics, even if no command was ever run.*/
 func TestRunCommandOutputError(t *testing.T) {
 	t.Parallel()
 
@@ -180,6 +181,7 @@ func TestCommandOutputType(t *testing.T) {
 		}
 		assert.Len(t, o.Output.Stdout(), len(stdout))
 		assert.Len(t, o.Output.Stderr(), len(stderr))
-		assert.Len(t, o.Output.Combined(), len(stdout)+len(stderr)+1) // +1 for newline
+		/* Increment by one for newline*/
+		assert.Len(t, o.Output.Combined(), len(stdout)+len(stderr)+1) 
 	}
 }
